@@ -1,6 +1,7 @@
 
 var loggly = require('loggly'),
-	util = require('util');
+	util = require('util'),
+	objectAssign = require('object-assign');
 
 function Bunyan2Loggly (logglyConfig, buffer) {
 
@@ -32,7 +33,8 @@ Bunyan2Loggly.prototype.write = function(rec) {
 
 		// loggly prefers timestamp over time
 		if (rec.time !== undefined) {
-			rec.timestamp = rec.time;
+			// Copy object since other streams might depend on time being there.
+			rec = objectAssign({ timestamp: rec.time }, rec);
 			delete rec.time;
 		}
 
